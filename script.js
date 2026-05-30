@@ -177,8 +177,21 @@ async function startCamera() {
   video.playsInline = true;
   video.muted = true;
 
-  video.onloadedmetadata = () => {
-    video.play().catch(console.log);
+  await video.play();
+
+  console.log(
+    "video ready",
+    video.videoWidth,
+    video.videoHeight
+
+  setInterval(() => {
+    if (video.readyState >= 2) {
+      video.style.transform =
+        video.style.transform === "translateZ(0px)"
+          ? "translateZ(0.1px)"
+          : "translateZ(0px)";
+    }
+  }, 500);
   };
 
   // 카메라 제어
