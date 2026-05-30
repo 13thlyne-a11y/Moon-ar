@@ -15,8 +15,8 @@ function createMoonTexture() {
     512, 512, 600
   );
 
-  base.addColorStop(0, "#e6e1d3");
-  base.addColorStop(1, "#cfc7b3");
+  base.addColorStop(0, "#f0ece2");
+  base.addColorStop(1, "#b8b1a3");
 
   ctx.fillStyle = base;
   ctx.fillRect(0, 0, 1024, 1024);
@@ -50,6 +50,30 @@ function createMoonTexture() {
   return new THREE.CanvasTexture(canvas);
 }
 
+function createMoonNormalMap() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1024;
+  canvas.height = 1024;
+
+  const ctx = canvas.getContext("2d");
+
+  const imageData = ctx.createImageData(1024, 1024);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const n = Math.random() * 255;
+
+    data[i] = 128 + n * 0.3;     // R
+    data[i + 1] = 128 + n * 0.3; // G
+    data[i + 2] = 255;           // B (normal blue)
+    data[i + 3] = 255;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+
+  return new THREE.CanvasTexture(canvas);
+}
+
 const video = document.getElementById("video");
 const canvas = document.getElementById("threeCanvas");
 
@@ -60,7 +84,12 @@ const renderer = new THREE.WebGLRenderer({
   preserveDrawingBuffer: true
 });
 
+renderer.setPixelRatio(window.devicePixelRatio || 1);
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
 
 const scene = new THREE.Scene();
 
@@ -76,12 +105,15 @@ camera.position.z = 3;
 /* -------------------------
    1. 조명
 ------------------------- */
-const light = new THREE.AmbientLight(0xffffff, 1);
-scene.add(light);
+scene.light(new THREE.AmbientLight(0xffffff, 0.15));
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
-dirLight.position.set(4, 2, 3);
-scene.add(dirLight);
+const sun = new THREE.DirectionalLight(0xffffff, 2.0);
+sun.position.set(5, 2, 3);
+scene.light(sun);
+
+const rim = new THREE.DirectionalLight(0x88aaff, 0.4);
+rim.position.set(-5, 0, -3);
+scene.light(rim);
 
 /* -------------------------
    2. 보름달 생성
@@ -92,9 +124,21 @@ const moonTexture = createMoonTexture();
 
 const moonMaterial = new THREE.MeshStandardMaterial({
   map: moonTexture,
-  roughness: 0.95,
-  metalness: 0.0
+
+  roughness: 1.0,
+  metalness: 0.0,
+
+  roughnessMap: moonTexture,
+  displacementMap: moonTexture,
+  displacementScale: 0.03,
+
+  normalScale: new THREE.Vector2(0.6, 0.6)
 });
+
+const normalMap = createMoonNormalMap();
+
+moonMaterial.normalMap = normalMap;
+moonMaterial.normalScale = new THREE.Vector2(1.2, 1.2);
 
 const moon = new THREE.Mesh(geometry, moonMaterial);
 
