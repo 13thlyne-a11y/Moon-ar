@@ -50,6 +50,16 @@ const moon = new THREE.Mesh(geometry, moonMaterial);
 moon.visible = false;
 scene.add(moon);
 
+function updateMoonScale() {
+  const size =
+    Math.min(window.innerWidth, window.innerHeight) * 0.0015;
+
+  moon.scale.set(size, size, size);
+}
+
+// 최초 1회 실행
+updateMoonScale();
+
 /* -------------------------
    3. 카메라 시작
 ------------------------- */
@@ -143,4 +153,6 @@ window.addEventListener("resize", () => {
     window.innerWidth / window.innerHeight;
 
   camera.updateProjectionMatrix();
+
+  updateMoonScale();
 });
