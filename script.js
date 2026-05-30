@@ -1,5 +1,7 @@
 import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
 
+document.addEventListener("DOMContentLoaded", () => {
+
 function createMoonTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
@@ -46,7 +48,6 @@ function createMoonTexture() {
   ctx.putImageData(imageData, 0, 0);
 
   return new THREE.CanvasTexture(canvas);
-}
 }
 
 const video = document.getElementById("video");
@@ -219,4 +220,5 @@ window.addEventListener("resize", () => {
   camera.updateProjectionMatrix();
 
   updateMoonScale();
+});
 });
