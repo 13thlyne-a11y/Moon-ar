@@ -170,27 +170,41 @@ document.getElementById("captureBtn")
     const captureCanvas =
       document.createElement("canvas");
 
-    captureCanvas.width = window.innerWidth;
-    captureCanvas.height = window.innerHeight;
+    captureCanvas.width = innerWidth;
+    captureCanvas.height = innerHeight;
 
     const ctx = captureCanvas.getContext("2d");
 
     // 1. 카메라 화면
-    ctx.drawImage(video, 0, 0,
-      captureCanvas.width,
-      captureCanvas.height
-    );
+    ctx.drawImage(video, 0, 0);
 
-    // 2. Three.js 캔버스
-    ctx.drawImage(renderer.domElement, 0, 0,
-                  captureCanvas.width,
-                  captureCanvas.height);
+    // 2. 3D 보름달 (WebGL)
+    ctx.drawImage(renderer.domElement, 0, 0);
 
-    // 3. 저장
-    const link = document.createElement("a");
-    link.download = "moon-shot.png";
-    link.href = captureCanvas.toDataURL("image/png");
-    link.click();
+    const img = captureCanvas.toDataURL("image/png");
+
+    // 3. 프레임 UI 열기
+    document.getElementById("captureFrame")
+      .classList.remove("hidden");
+
+    document.getElementById("previewImg")
+      .src = img;
+
+    // 4. 저장 버튼
+    document.getElementById("downloadBtn")
+      .onclick = () => {
+        const a = document.createElement("a");
+        a.href = img;
+        a.download = "moon.png";
+        a.click();
+      };
+
+    // 5. 닫기 버튼
+    document.getElementById("closeBtn")
+      .onclick = () => {
+        document.getElementById("captureFrame")
+          .classList.add("hidden");
+      };
   });
 
 /* -------------------------
