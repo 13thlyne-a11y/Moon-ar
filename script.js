@@ -198,6 +198,10 @@ async function startCamera() {
 
 startCamera().catch(console.error);
 
+window.addEventListener("touchstart", () => {
+  video.play().catch(() => {});
+}, { once: true });
+
 /* -------------------------
    4. 렌더 루프
 ------------------------- */
