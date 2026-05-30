@@ -2,130 +2,111 @@ import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
 
-  /* -----------------------
-     DOM
-  ----------------------- */
   const video = document.getElementById("video");
   const canvas = document.getElementById("threeCanvas");
 
   const moonBtn = document.getElementById("moonBtn");
   const captureBtn = document.getElementById("captureBtn");
-  const downloadBtn = document.getElementById("downloadBtn");
-  const closeBtn = document.getElementById("closeBtn");
 
-  /* -----------------------
-     Renderer
-  ----------------------- */
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    alpha: true
+    alpha: true,
+    antialias: true
   });
 
   renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-  /* -----------------------
-     Scene / Camera
-  ----------------------- */
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
     60,
     window.innerWidth / window.innerHeight,
     0.1,
-    100
+    1000
   );
 
   camera.position.z = 2;
 
-  /* -----------------------
-     LIGHT (안정형)
-  ----------------------- */
-  scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+  /* -------------------------
+     카메라 (핵심 안정 구조)
+  ------------------------- */
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: {
+        facingMode: "environment"
+      },
+      audio: false
+    });
 
-  const light = new THREE.DirectionalLight(0xffffff, 1.2);
-  light.position.set(3, 3, 3);
-  scene.add(light);
+    video.srcObject = stream;
+    video.playsInline = true;
+    video.muted = true;
 
-  /* -----------------------
-     VIDEO → TEXTURE (핵심)
-  ----------------------- */
-  const stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment" },
-    audio: false
-  });
+    await video.play();
 
-  video.srcObject = stream;
-  video.playsInline = true;
-  video.muted = true;
-  
-  await video.play();
-
-  /* -----------------------
-     MOON (PBR 안정 버전)
-  ----------------------- */
-  function createMoon() {
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 512;
-
-    const ctx = canvas.getContext("2d");
-
-    const grad = ctx.createRadialGradient(256, 256, 50, 256, 256, 256);
-    grad.addColorStop(0, "#f2efe6");
-    grad.addColorStop(1, "#b9b2a3");
-
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 512, 512);
-
-    for (let i = 0; i < 300; i++) {
-      const x = Math.random() * 512;
-      const y = Math.random() * 512;
-      const r = Math.random() * 3;
-
-      ctx.fillStyle = "rgba(100,100,100,0.15)";
-      ctx.beginPath();
-      ctx.arc(x, y, r, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    return new THREE.CanvasTexture(canvas);
+  } catch (e) {
+    console.log("camera error", e);
   }
 
-  const moonTex = createMoon();
+  /* -------------------------
+     달 생성 (최소 안정 버전)
+  ------------------------- */
+  const geometry = new THREE.SphereGeometry(0.5, 48, 48);
 
-  const moon = new THREE.Mesh(
-    new THREE.SphereGeometry(0.35, 48, 48),
-    new THREE.MeshStandardMaterial({
-      map: moonTex,
-      roughness: 1.0
-    })
-  );
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    roughness: 1
+  });
 
-  moon.position.set(0.6, 0.5, 0);
+  const moon = new THREE.Mesh(geometry, material);
   moon.visible = false;
-
   scene.add(moon);
 
-  /* -----------------------
-     RENDER LOOP
-  ----------------------- */
+  /* 조명 */
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+
+  const light = new THREE.DirectionalLight(0xffffff, 1.2);
+  light.position.set(3, 2, 2);
+  scene.add(light);
+
+  /* -------------------------
+     렌더 루프 (절대 단순 유지)
+  ------------------------- */
   function animate() {
     requestAnimationFrame(animate);
+
+    moon.rotation.y += 0.01;
+
     renderer.render(scene, camera);
   }
 
   animate();
 
-  /* -----------------------
-     BUTTONS
-  ----------------------- */
-  document.getElementById("moonBtn").addEventListener("click", () => {
+  /* -------------------------
+     버튼
+  ------------------------- */
+  moonBtn.addEventListener("click", () => {
     moon.visible = !moon.visible;
   });
 
-  document.getElementById("captureBtn").addEventListener("click", () => {
+  /* -------------------------
+     캡처 (안정 버전)
+  ------------------------- */
+  captureBtn.addEventListener("click", () => {
 
-    const img = renderer.domElement.toDataURL("image/png");
+    const w = video.videoWidth;
+    const h = video.videoHeight;
+
+    const canvas2 = document.createElement("canvas");
+    canvas2.width = w;
+    canvas2.height = h;
+
+    const ctx = canvas2.getContext("2d");
+
+    ctx.drawImage(video, 0, 0, w, h);
+
+    const img = canvas2.toDataURL("image/png");
 
     document.getElementById("captureFrame").classList.remove("hidden");
     document.getElementById("previewImg").src = img;
@@ -142,9 +123,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
   });
 
-  /* -----------------------
-     RESIZE
-  ----------------------- */
+  /* -------------------------
+     리사이즈
+  ------------------------- */
   window.addEventListener("resize", () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
