@@ -175,11 +175,9 @@ async function startCamera() {
   video.playsInline = true;
   video.muted = true;
 
-  try {
-    await video.play();
-  } catch (e) {
-    console.log("play error:", e);
-  }
+  video.onloadedmetadata = () => {
+    video.play().catch(console.log);
+  };
 
   // 카메라 제어
   const track = stream.getVideoTracks()[0];
