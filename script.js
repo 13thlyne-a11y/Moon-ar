@@ -19,12 +19,12 @@ function createMoonTexture() {
   base.addColorStop(1, "#b8b1a3");
 
   ctx.fillStyle = base;
-  ctx.fillRect(0, 0, 1024, 1024);
+  ctx.fillRect(0, 0, 512, 512);
 
   // 2. 큰 크레이터
   for (let i = 0; i < 250; i++) {
-    const x = Math.random() * 1024;
-    const y = Math.random() * 1024;
+    const x = Math.random() * 512;
+    const y = Math.random() * 512;
     const r = Math.random() * 30 + 5;
 
     ctx.beginPath();
@@ -57,7 +57,7 @@ function createMoonNormalMap() {
 
   const ctx = canvas.getContext("2d");
 
-  const imageData = ctx.createImageData(1024, 1024);
+  const imageData = ctx.createImageData(512, 512);
   const data = imageData.data;
 
   for (let i = 0; i < data.length; i += 4) {
@@ -183,6 +183,7 @@ async function startCamera() {
     "video ready",
     video.videoWidth,
     video.videoHeight
+  );
 
   setInterval(() => {
     if (video.readyState >= 2) {
