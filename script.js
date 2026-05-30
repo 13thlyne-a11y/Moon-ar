@@ -99,10 +99,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-renderer.setAnimationLoop(() => {
-  moon.rotation.y += 0.002;
-  renderer.render(scene, camera);
-});
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 renderer.setClearColor(0x000000, 0);
