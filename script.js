@@ -178,6 +178,9 @@ async function startCamera() {
   video.playsInline = true;
   video.muted = true;
 
+  video.setAttribute("playsinline", "");
+  video.setAttribute("muted", "");
+
   await video.play();
   };
 
