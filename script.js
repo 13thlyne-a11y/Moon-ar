@@ -171,16 +171,20 @@ document.getElementById("captureBtn")
     const captureCanvas =
       document.createElement("canvas");
 
-    captureCanvas.width = innerWidth;
-    captureCanvas.height = innerHeight;
+    captureCanvas.width = renderer.domElement.width;
+    captureCanvas.height = renderer.domElement.height;
 
     const ctx = captureCanvas.getContext("2d");
 
     // 1. 카메라 화면
-    ctx.drawImage(video, 0, 0);
+    ctx.drawImage(video, 0, 0,
+                 captureCanvas.width,
+                 captureCanvas.height);
 
     // 2. 3D 보름달 (WebGL)
-    ctx.drawImage(renderer.domElement, 0, 0);
+    ctx.drawImage(renderer.domElement, 0, 0,
+                 captureCanvas.width,
+                 captureCanvas.height);
 
     const img = captureCanvas.toDataURL("image/png");
 
