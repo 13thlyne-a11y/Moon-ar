@@ -6,7 +6,8 @@ const canvas = document.getElementById("threeCanvas");
 const renderer = new THREE.WebGLRenderer({
   canvas,
   alpha: true,
-  antialias: true
+  antialias: true,
+  preserveDrawingBuffer: true
 });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -54,11 +55,26 @@ scene.add(moon);
 ------------------------- */
 async function startCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
-    video: { facingMode: "environment" },
+    video: { 
+      facingMode: { ideal: "environment" },
+      width: { ideal: 1280 },
+      height: { ideal: 720 },
+      aspectRatio: { ideal: 16 / 9 }
+    },
     audio: false
   });
 
   video.srcObject = stream;
+
+  // 카메라 제어
+  const track = stream.getVideoTracks()[0];
+  const capabilities = track.getCapabilities?.();
+
+  if (capabilities?.zoom) {
+    track.applyConstraints({
+      advanced: [{ zoom: 1 }]
+    });
+  }
 }
 
 startCamera();
@@ -106,7 +122,9 @@ document.getElementById("captureBtn")
     );
 
     // 2. Three.js 캔버스
-    ctx.drawImage(canvas, 0, 0);
+    ctx.drawImage(renderer.domElement, 0, 0,
+                  captureCanvas.width,
+                  captureCanvas.height);
 
     // 3. 저장
     const link = document.createElement("a");
