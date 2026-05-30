@@ -87,7 +87,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-renderer.outputEncoding = THREE.SRGBEncoding;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.2;
 
@@ -105,15 +105,15 @@ camera.position.z = 3;
 /* -------------------------
    1. 조명
 ------------------------- */
-scene.light(new THREE.AmbientLight(0xffffff, 0.15));
+scene.add(new THREE.AmbientLight(0xffffff, 0.15));
 
 const sun = new THREE.DirectionalLight(0xffffff, 2.0);
 sun.position.set(5, 2, 3);
-scene.light(sun);
+scene.add(sun);
 
 const rim = new THREE.DirectionalLight(0x88aaff, 0.4);
 rim.position.set(-5, 0, -3);
-scene.light(rim);
+scene.add(rim);
 
 /* -------------------------
    2. 보름달 생성
@@ -188,7 +188,7 @@ async function startCamera() {
   }
 }
 
-await startCamera();
+startCamera().catch(console.error);
 
 /* -------------------------
    4. 렌더 루프
