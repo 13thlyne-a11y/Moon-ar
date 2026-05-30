@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
-    alpha: false,
+    alpha: true,
     preserveDrawingBuffer: true
   });
 
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(1);
 
   /* -----------------------
      Scene / Camera
@@ -61,9 +61,27 @@ document.addEventListener("DOMContentLoaded", async () => {
   await video.play();
 
   const videoTexture = new THREE.VideoTexture(video);
-  videoTexture.colorSpace = THREE.SRGBColorSpace;
 
-  scene.background = videoTexture;
+  function updateVideoTexture() {
+    if (video.readyState >= 2) {
+      videoTexture.needsUpdate = true;
+    }
+    requestAnimationFrame(updateVideoTexture);
+  }
+
+  updateVideoTexture();
+
+  const bgGeometry = new THREE.PlaneGeometry(2, 2);
+
+  const bgMaterial = new THREE.MeshBasicMaterial({
+    map: videoTexture
+  });
+
+  const bgMesh = new THREE.Mesh(bgGeometry, bgMaterial);
+  bgMesh.position.z = -2;
+  scene.add(bgMesh);
+  
+  videoTexture.colorSpace = THREE.SRGBColorSpace;
 
   /* -----------------------
      MOON (PBR 안정 버전)
