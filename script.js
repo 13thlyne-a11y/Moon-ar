@@ -2,28 +2,51 @@ import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
 
 function createMoonTexture() {
   const canvas = document.createElement("canvas");
-  canvas.width = 512;
-  canvas.height = 512;
+  canvas.width = 1024;
+  canvas.height = 1024;
 
   const ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "#d9d2b6";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // 1. 기본 색 (달 베이스)
+  const base = ctx.createRadialGradient(
+    512, 512, 50,
+    512, 512, 600
+  );
 
-  for (let i = 0; i < 1200; i++) {
-    const x = Math.random() * canvas.width;
-    const y = Math.random() * canvas.height;
-    const r = Math.random() * 3 + 1;
+  base.addColorStop(0, "#e6e1d3");
+  base.addColorStop(1, "#cfc7b3");
 
-    const shade = Math.random() * 40;
+  ctx.fillStyle = base;
+  ctx.fillRect(0, 0, 1024, 1024);
+
+  // 2. 큰 크레이터
+  for (let i = 0; i < 250; i++) {
+    const x = Math.random() * 1024;
+    const y = Math.random() * 1024;
+    const r = Math.random() * 30 + 5;
 
     ctx.beginPath();
-    ctx.fillStyle = `rgba(${200 - shade}, ${190 - shade}, ${160 - shade}, 0.4)`;
+    ctx.fillStyle = "rgba(120,110,95,0.15)";
     ctx.arc(x, y, r, 0, Math.PI * 2);
     ctx.fill();
   }
 
+  // 3. 미세 노이즈 (핵심)
+  const imageData = ctx.getImageData(0, 0, 1024, 1024);
+  const data = imageData.data;
+
+  for (let i = 0; i < data.length; i += 4) {
+    const noise = (Math.random() - 0.5) * 10;
+
+    data[i] += noise;
+    data[i + 1] += noise;
+    data[i + 2] += noise;
+  }
+
+  ctx.putImageData(imageData, 0, 0);
+
   return new THREE.CanvasTexture(canvas);
+}
 }
 
 const video = document.getElementById("video");
@@ -55,8 +78,8 @@ camera.position.z = 3;
 const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-dirLight.position.set(3, 1, 2);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+dirLight.position.set(4, 2, 3);
 scene.add(dirLight);
 
 /* -------------------------
@@ -68,7 +91,8 @@ const moonTexture = createMoonTexture();
 
 const moonMaterial = new THREE.MeshStandardMaterial({
   map: moonTexture,
-  roughness: 1
+  roughness: 0.95,
+  metalness: 0.0
 });
 
 const moon = new THREE.Mesh(geometry, moonMaterial);
