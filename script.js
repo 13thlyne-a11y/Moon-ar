@@ -14,12 +14,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   const renderer = new THREE.WebGLRenderer({
     canvas,
     antialias: true,
-    alpha: true,
-    preserveDrawingBuffer: true
+    alpha: true
   });
 
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(1);
 
   /* -----------------------
      Scene / Camera
@@ -48,38 +46,14 @@ document.addEventListener("DOMContentLoaded", async () => {
      VIDEO → TEXTURE (핵심)
   ----------------------- */
   const stream = await navigator.mediaDevices.getUserMedia({
-    video: {
-      facingMode: { ideal: "environment" }
-    },
+    video: { facingMode: "environment" },
     audio: false
   });
 
   video.srcObject = stream;
   video.playsInline = true;
   video.muted = true;
-
   await video.play();
-
-  const videoTexture = new THREE.VideoTexture(video);
-
-  function updateVideoTexture() {
-    if (video.readyState >= 2) {
-      videoTexture.needsUpdate = true;
-    }
-    requestAnimationFrame(updateVideoTexture);
-  }
-
-  updateVideoTexture();
-
-  const bgGeometry = new THREE.PlaneGeometry(2, 2);
-
-  const bgMaterial = new THREE.MeshBasicMaterial({
-    map: videoTexture
-  });
-
-  const bgMesh = new THREE.Mesh(bgGeometry, bgMaterial);
-  bgMesh.position.z = -2;
-  scene.add(bgMesh);
   
   videoTexture.colorSpace = THREE.SRGBColorSpace;
 
