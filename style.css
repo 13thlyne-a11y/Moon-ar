@@ -7,6 +7,7 @@ html, body {
   background: black;
 }
 
+/* 카메라 */
 #video {
   position: fixed;
   inset: 0;
@@ -16,72 +17,18 @@ html, body {
   z-index: 0;
 }
 
+/* three overlay */
 #threeCanvas {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 1;
   pointer-events: none;
+  z-index: 1;
 }
 
-#moonBtn {
+/* 버튼 */
+#moonBtn, #captureBtn {
   position: absolute;
-  left: 20px;
-  bottom: 20px;
-
-  padding: 14px 18px;
-  border: none;
-  border-radius: 14px;
-
-  background: white;
-  font-size: 16px;
   z-index: 10;
-}
-
-#captureBtn {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-
-  padding: 14px 18px;
-  border: none;
-  border-radius: 14px;
-
-  background: #4caf50;
-  color: white;
-  font-size: 16px;
-  z-index: 10;
-}
-
-#captureFrame {
-  position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.85);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-#captureFrame img {
-  width: 90%;
-  border-radius: 12px;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.frame-buttons {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
-}
-
-.frame-buttons button {
-  padding: 10px 16px;
-  border-radius: 10px;
-  border: none;
 }
