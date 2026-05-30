@@ -1,5 +1,31 @@
 import * as THREE from "https://unpkg.com/three@0.165.0/build/three.module.js";
 
+function createMoonTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+
+  const ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "#d9d2b6";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < 1200; i++) {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const r = Math.random() * 3 + 1;
+
+    const shade = Math.random() * 40;
+
+    ctx.beginPath();
+    ctx.fillStyle = `rgba(${200 - shade}, ${190 - shade}, ${160 - shade}, 0.4)`;
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  return new THREE.CanvasTexture(canvas);
+}
+
 const video = document.getElementById("video");
 const canvas = document.getElementById("threeCanvas");
 
@@ -30,7 +56,7 @@ const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
 
 const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-dirLight.position.set(5, 5, 5);
+dirLight.position.set(3, 1, 2);
 scene.add(dirLight);
 
 /* -------------------------
@@ -38,10 +64,10 @@ scene.add(dirLight);
 ------------------------- */
 const geometry = new THREE.SphereGeometry(1, 64, 64);
 
-const textureLoader = new THREE.TextureLoader();
+const moonTexture = createMoonTexture();
 
 const moonMaterial = new THREE.MeshStandardMaterial({
-  color: 0xf5f2d0,
+  map: moonTexture,
   roughness: 1
 });
 
