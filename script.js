@@ -34,7 +34,7 @@ function createMoonTexture() {
   }
 
   // 3. 미세 노이즈 (핵심)
-  const imageData = ctx.getImageData(0, 0, 1024, 1024);
+  const imageData = ctx.getImageData(0, 0, 512, 512);
   const data = imageData.data;
 
   for (let i = 0; i < data.length; i += 4) {
@@ -120,9 +120,9 @@ scene.add(rim);
 /* -------------------------
    2. 보름달 생성
 ------------------------- */
-const geometry = new THREE.SphereGeometry(1, 64, 64);
+const geometry = new THREE.SphereGeometry(1, 32, 32);
 
-const moonTexture = createMoonTexture();
+/*const moonTexture = createMoonTexture();
 
 const moonMaterial = new THREE.MeshStandardMaterial({
   map: moonTexture,
@@ -140,7 +140,11 @@ const moonMaterial = new THREE.MeshStandardMaterial({
 const normalMap = createMoonNormalMap();
 
 moonMaterial.normalMap = normalMap;
-moonMaterial.normalScale = new THREE.Vector2(1.2, 1.2);
+moonMaterial.normalScale = new THREE.Vector2(1.2, 1.2);*/
+
+const moonMaterial = new THREE.MeshStandardMaterial({
+  color: 0xffffff
+});
 
 const moon = new THREE.Mesh(geometry, moonMaterial);
 
@@ -163,54 +167,21 @@ updateMoonScale();
 async function startCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: { 
-      facingMode: { ideal: "environment" },
-      width: { ideal: 1920 },
-      height: { ideal: 1080 },
-      aspectRatio: { ideal: 16 / 9 }
+      facingMode: { ideal: "environment" }
     },
     audio: false
   });
 
   video.srcObject = stream;
-
+  
   video.autoplay = true;
   video.playsInline = true;
   video.muted = true;
 
   await video.play();
-
-  console.log(
-    "video ready",
-    video.videoWidth,
-    video.videoHeight
-  );
-
-  setInterval(() => {
-    if (video.readyState >= 2) {
-      video.style.transform =
-        video.style.transform === "translateZ(0px)"
-          ? "translateZ(0.1px)"
-          : "translateZ(0px)";
-    }
-  }, 500);
   };
 
-  // 카메라 제어
-  const track = stream.getVideoTracks()[0];
-  const capabilities = track.getCapabilities?.();
-
-  if (capabilities?.zoom) {
-    track.applyConstraints({
-      advanced: [{ zoom: 1 }]
-    });
-  }
-}
-
 startCamera().catch(console.error);
-
-window.addEventListener("touchstart", () => {
-  video.play().catch(() => {});
-}, { once: true });
 
 /* -------------------------
    4. 렌더 루프
