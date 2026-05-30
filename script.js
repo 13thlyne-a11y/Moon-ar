@@ -194,7 +194,7 @@ function animate() {
 
   moon.rotation.y += 0.002;
 
-  renderer.render(scene, camera);
+  //renderer.render(scene, camera);
 }
 
 animate();
