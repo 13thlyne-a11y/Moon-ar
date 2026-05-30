@@ -1,36 +1,26 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moon Camera</title>
 
-<title>Moon-ar</title>
-
-<link rel="stylesheet" href="style.css">
-
-<script type="importmap">
-{
-  "imports": {
-    "three":"https://unpkg.com/three@0.161.0/build/three.module.js"
-  }
-}
-</script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<!-- CAMERA -->
-<video id="video" autoplay muted playsinline></video>
+  <!-- 카메라 영상 -->
+  <video id="video" autoplay playsinline></video>
 
-<!-- THREE.JS -->
-<div id="three"></div>
+  <!-- Three.js 렌더링 -->
+  <canvas id="threeCanvas"></canvas>
 
-<!-- UI -->
-<div id="ui">
-  <button id="captureBtn">📸</button>
-</div>
+  <!-- UI -->
+  <button id="moonBtn">🌕 보름달</button>
+  <button id="captureBtn">촬영</button>
 
-<script type="module" src="app.js"></script>
+  <script type="module" src="script.js"></script>
 
 </body>
 </html>
