@@ -191,13 +191,8 @@ async function startCamera() {
   video.playsInline = true;
   video.muted = true;
 
-  video.onloadedmetadata = async () => {
-    try {
-      await video.play();
-      warmUpVideo(video);
-    } catch (e) {
-      console.log(e);
-    }
+  video.onloadedmetadata = () => {
+    video.play().catch(console.log);
   };
 
   // 카메라 제어
