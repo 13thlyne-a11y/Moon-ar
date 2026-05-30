@@ -35,3 +35,18 @@ canvas {
   border: none;
   font-size: 28px;
 }
+
+video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+}
