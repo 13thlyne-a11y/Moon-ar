@@ -22,7 +22,10 @@ async function startCamera() {
 
     await video.play();
 
-    console.log("✅ camera started");
+    console.log("camera started");
+
+    console.log("videoWidth =", video.videoWidth);
+    console.log("videoHeight =", video.videoHeight);
 
   } catch (e) {
     console.error("camera error", e);
