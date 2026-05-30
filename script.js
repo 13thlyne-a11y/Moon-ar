@@ -118,14 +118,16 @@ async function startCamera() {
   const stream = await navigator.mediaDevices.getUserMedia({
     video: { 
       facingMode: { ideal: "environment" },
-      width: { ideal: 1280 },
-      height: { ideal: 720 },
+      width: { ideal: 1920 },
+      height: { ideal: 1080 },
       aspectRatio: { ideal: 16 / 9 }
     },
     audio: false
   });
 
   video.srcObject = stream;
+
+  await video.play();
 
   // 카메라 제어
   const track = stream.getVideoTracks()[0];
@@ -168,23 +170,21 @@ document.getElementById("moonBtn")
 document.getElementById("captureBtn")
   .addEventListener("click", () => {
 
-    const captureCanvas =
-      document.createElement("canvas");
+    const vw = video.videoWidth;
+    const vh = video.videoHeight;
+    
+    const captureCanvas = document.createElement("canvas");
 
-    captureCanvas.width = renderer.domElement.width;
-    captureCanvas.height = renderer.domElement.height;
+    captureCanvas.width = vw;
+    captureCanvas.height = vh;
 
     const ctx = captureCanvas.getContext("2d");
 
     // 1. 카메라 화면
-    ctx.drawImage(video, 0, 0,
-                 captureCanvas.width,
-                 captureCanvas.height);
+    ctx.drawImage(video, 0, 0, vw, vh);
 
     // 2. 3D 보름달 (WebGL)
-    ctx.drawImage(renderer.domElement, 0, 0,
-                 captureCanvas.width,
-                 captureCanvas.height);
+    ctx.drawImage(renderer.domElement, 0, 0, vw, vh);
 
     const img = captureCanvas.toDataURL("image/png");
 
