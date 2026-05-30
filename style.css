@@ -52,3 +52,35 @@ html, body {
   font-size: 16px;
   z-index: 10;
 }
+
+#captureFrame {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#captureFrame img {
+  width: 90%;
+  border-radius: 12px;
+}
+
+.hidden {
+  display: none;
+}
+
+.frame-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.frame-buttons button {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+}
