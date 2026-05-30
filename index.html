@@ -2,9 +2,9 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Moon AR</title>
+<title>Moon-ar</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -19,10 +19,15 @@
 
 <body>
 
-<video id="camera" autoplay playsinline muted></video>
+<!-- CAMERA -->
+<video id="video" autoplay muted playsinline></video>
 
+<!-- THREE.JS -->
+<div id="three"></div>
+
+<!-- UI -->
 <div id="ui">
-  <button id="capture">📸</button>
+  <button id="captureBtn">📸</button>
 </div>
 
 <script type="module" src="app.js"></script>
