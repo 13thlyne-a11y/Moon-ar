@@ -12,6 +12,12 @@ async function startCamera() {
   });
 
   video.srcObject = stream;
+
+  video.setAttribute("playsinline", "");
+  video.setAttribute("autoplay", "");
+  video.setAttribute("muted", "");
+
+  await video.play(); // ⭐ 이게 핵심
 }
 
 startCamera();
