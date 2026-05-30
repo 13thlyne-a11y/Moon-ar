@@ -8,12 +8,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const video = document.getElementById("video");
   const canvas = document.getElementById("threeCanvas");
 
+  const moonBtn = document.getElementById("moonBtn");
+  const captureBtn = document.getElementById("captureBtn");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const closeBtn = document.getElementById("closeBtn");
+
   /* -----------------------
      Renderer
   ----------------------- */
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    antialias: true,
     alpha: true
   });
 
@@ -31,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     100
   );
 
-  camera.position.z = 2.5;
+  camera.position.z = 2;
 
   /* -----------------------
      LIGHT (안정형)
@@ -53,9 +57,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   video.srcObject = stream;
   video.playsInline = true;
   video.muted = true;
-  await video.play();
   
-  videoTexture.colorSpace = THREE.SRGBColorSpace;
+  await video.play();
 
   /* -----------------------
      MOON (PBR 안정 버전)
@@ -108,9 +111,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   ----------------------- */
   function animate() {
     requestAnimationFrame(animate);
-
-    moon.rotation.y += 0.003;
-
     renderer.render(scene, camera);
   }
 
