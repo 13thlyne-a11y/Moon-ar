@@ -74,20 +74,6 @@ function createMoonNormalMap() {
   return new THREE.CanvasTexture(canvas);
 }
 
-function warmUpVideo(video) {
-  let count = 0;
-
-  const timer = setInterval(() => {
-    if (video.readyState >= 2) {
-      video.play().catch(() => {});
-      video.currentTime = video.currentTime;
-    }
-
-    count++;
-    if (count > 10) clearInterval(timer);
-  }, 100);
-}
-
 const video = document.getElementById("video");
 const canvas = document.getElementById("threeCanvas");
 
