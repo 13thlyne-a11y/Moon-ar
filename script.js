@@ -74,6 +74,20 @@ function createMoonNormalMap() {
   return new THREE.CanvasTexture(canvas);
 }
 
+function warmUpVideo(video) {
+  let count = 0;
+
+  const timer = setInterval(() => {
+    if (video.readyState >= 2) {
+      video.play().catch(() => {});
+      video.currentTime = video.currentTime;
+    }
+
+    count++;
+    if (count > 10) clearInterval(timer);
+  }, 100);
+}
+
 const video = document.getElementById("video");
 const canvas = document.getElementById("threeCanvas");
 
@@ -85,6 +99,10 @@ const renderer = new THREE.WebGLRenderer({
 });
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setAnimationLoop(() => {
+  moon.rotation.y += 0.002;
+  renderer.render(scene, camera);
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 renderer.setClearColor(0x000000, 0);
@@ -177,13 +195,14 @@ async function startCamera() {
   video.playsInline = true;
   video.muted = true;
 
-  video.onloadedmetadata = () => {
-    video.play().catch(console.log);
+  video.onloadedmetadata = async () => {
+    try {
+      await video.play();
+      warmUpVideo(video);
+    } catch (e) {
+      console.log(e);
+    }
   };
-
-  setInterval(() => {
-    video.play().catch(() => {});
-  }, 2000);
 
   // 카메라 제어
   const track = stream.getVideoTracks()[0];
