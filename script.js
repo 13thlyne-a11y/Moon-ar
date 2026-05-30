@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   ----------------------- */
   const renderer = new THREE.WebGLRenderer({
     canvas,
-    alpha: true,
-    antialias: true
+    antialias: true,
+    alpha: false,
+    preserveDrawingBuffer: true
   });
 
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -62,14 +63,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const videoTexture = new THREE.VideoTexture(video);
   videoTexture.colorSpace = THREE.SRGBColorSpace;
 
-  const bgGeometry = new THREE.PlaneGeometry(2, 2);
-  const bgMaterial = new THREE.MeshBasicMaterial({
-    map: videoTexture
-  });
-
-  const bgMesh = new THREE.Mesh(bgGeometry, bgMaterial);
-  bgMesh.position.z = -1;
-  scene.add(bgMesh);
+  scene.background = videoTexture;
 
   /* -----------------------
      MOON (PBR 안정 버전)
