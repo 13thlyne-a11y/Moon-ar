@@ -84,10 +84,10 @@ const renderer = new THREE.WebGLRenderer({
   preserveDrawingBuffer: true
 });
 
-renderer.setPixelRatio(window.devicePixelRatio || 1);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.outputEncoding = THREE.SRGBEncoding;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.2;
 
@@ -171,6 +171,10 @@ async function startCamera() {
 
   video.srcObject = stream;
 
+  video.autoplay = true;
+  video.playsInline = true;
+  video.muted = true;
+
   await video.play();
 
   // 카메라 제어
@@ -184,7 +188,7 @@ async function startCamera() {
   }
 }
 
-startCamera();
+await startCamera();
 
 /* -------------------------
    4. 렌더 루프
