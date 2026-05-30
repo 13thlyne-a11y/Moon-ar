@@ -181,6 +181,10 @@ async function startCamera() {
     video.play().catch(console.log);
   };
 
+  setInterval(() => {
+    video.play().catch(() => {});
+  }, 2000);
+
   // 카메라 제어
   const track = stream.getVideoTracks()[0];
   const capabilities = track.getCapabilities?.();
