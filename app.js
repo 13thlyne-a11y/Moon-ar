@@ -45,6 +45,8 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+renderer.setClearColor(0x000000, 0);
+
 /* 조명 */
 const light = new THREE.DirectionalLight(0xffffff, 2);
 light.position.set(5, 5, 5);
