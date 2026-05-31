@@ -12,33 +12,19 @@
 </head>
 <body>
 
-<div id="camera-container">
+<video
+  id="camera"
+  autoplay
+  playsinline
+  muted
+  style="
+    width:100vw;
+    height:100vh;
+    object-fit:cover;
+  ">
+</video>
 
-    <video
-        id="camera"
-        autoplay
-        playsinline
-        muted>
-    </video>
-
-    <model-viewer
-        id="character"
-        src="./assets/character.glb"
-        camera-controls
-        auto-rotate
-        exposure="1"
-        shadow-intensity="1">
-    </model-viewer>
-
-</div>
-
-<div id="controls">
-    <button id="captureBtn">📸 촬영</button>
-</div>
-
-<canvas id="captureCanvas"></canvas>
-
-<script src="script.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
