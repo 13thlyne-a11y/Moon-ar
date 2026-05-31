@@ -7,41 +7,47 @@ startBtn.addEventListener("click", startCamera);
 
 async function startCamera() {
 
-    try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false
+    });
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: "environment" },
-            audio: false
-        });
+    alert("stream OK: " + stream.getVideoTracks().length);
 
-        alert("stream OK: " + stream.getVideoTracks().length);
+    video.srcObject = stream;
 
-        video.srcObject = stream;
+    await video.play();
 
-        video.onloadedmetadata = async () => {
-            await video.play();
-            alert("video play 시작");
-        };
+    alert("video play 시작");
 
-        startBtn.style.display = "none";
+    startBtn.style.display = "none";
 
-        draw();
-
-    } catch (err) {
-        alert(err.name + "\n" + err.message);
+    // 🔥 핵심: 프레임 콜백 기반 렌더링
+    if (video.requestVideoFrameCallback) {
+        video.requestVideoFrameCallback(drawFrame);
+    } else {
+        drawLegacy();
     }
 }
 
-function draw() {
+function drawFrame() {
 
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    video.requestVideoFrameCallback(drawFrame);
+}
+
+// fallback
+function drawLegacy() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
     try {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    } catch (e) {
-        alert("drawImage error: " + e.message);
-    }
+    } catch (e) {}
 
-    requestAnimationFrame(draw);
+    requestAnimationFrame(drawLegacy);
 }
