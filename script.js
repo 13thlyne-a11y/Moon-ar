@@ -7,16 +7,25 @@ async function startCamera() {
         const stream =
             await navigator.mediaDevices.getUserMedia({
                 video: {
-                    facingMode: "environment"
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                    facingMode: {
+                        ideal: "environment"
+                    }
                 },
-                audio:false
+                audio: false
             });
 
         video.srcObject = stream;
 
-    } catch(err) {
-        alert("카메라 접근 실패");
+        await video.play();
+
+        console.log("카메라 시작");
+
+    } catch (err) {
+
         console.error(err);
+        alert("카메라 접근 실패");
     }
 }
 
