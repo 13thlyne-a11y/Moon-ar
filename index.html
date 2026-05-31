@@ -12,24 +12,20 @@
 </head>
 <body>
 
-<button id="startBtn">
-    AR 시작
-</button>
-
 <video
   id="camera"
   autoplay
   playsinline
   muted
   webkit-playsinline
-  style="
-    width:100vw;
-    height:100vh;
-    object-fit:cover;
-  ">
+  style="display:none;">
 </video>
 
-<script src="script.js"></script>
+<canvas id="canvas"></canvas>
+
+<button id="startBtn">AR 시작</button>
+
+<script src="app.js"></script>
 
 </body>
 </html>
