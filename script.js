@@ -15,6 +15,14 @@ async function startCamera() {
 
         video.srcObject = stream;
 
+        setTimeout(async () => {
+            try {
+                await video.play();
+            } catch (e) {
+                console.log("play 실패:", e);
+            }
+        }, 200);
+
         alert("카메라 연결 성공");
 
         startBtn.style.display = "none";
