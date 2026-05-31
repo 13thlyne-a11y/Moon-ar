@@ -1,23 +1,7 @@
-alert("URL = " + location.href);
-alert("PROTOCOL = " + location.protocol);
-alert("SECURE = " + window.isSecureContext);
-
-navigator.permissions
-  .query({ name: "camera" })
-  .then(result => {
-      alert(
-          "camera permission = " +
-          result.state
-      );
-  })
-  .catch(err => {
-      alert(
-          "permissions api error\n" +
-          err.message
-      );
-  });
-
 const video = document.getElementById("camera");
+const startBtn = document.getElementById("startBtn");
+
+startBtn.addEventListener("click", startCamera);
 
 async function startCamera() {
 
@@ -31,9 +15,9 @@ async function startCamera() {
 
         video.srcObject = stream;
 
-        await video.play();
+        alert("카메라 연결 성공");
 
-        alert("카메라 시작 성공");
+        startBtn.style.display = "none";
 
     } catch (err) {
 
