@@ -14,29 +14,33 @@ async function startCamera() {
             audio: false
         });
 
+        alert("stream OK: " + stream.getVideoTracks().length);
+
         video.srcObject = stream;
 
-        alert("카메라 연결 성공");
-
-        // 🔥 핵심: 프레임을 canvas로 직접 복사
-        requestAnimationFrame(draw);
+        video.onloadedmetadata = async () => {
+            await video.play();
+            alert("video play 시작");
+        };
 
         startBtn.style.display = "none";
 
-    } catch (err) {
+        draw();
 
+    } catch (err) {
         alert(err.name + "\n" + err.message);
     }
 }
 
 function draw() {
 
-    if (video.readyState >= 2) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
+    try {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    } catch (e) {
+        alert("drawImage error: " + e.message);
     }
 
     requestAnimationFrame(draw);
