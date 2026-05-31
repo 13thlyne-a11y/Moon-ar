@@ -15,11 +15,15 @@ async function startCamera() {
 
         video.srcObject = stream;
 
+        setTimeout(() => {
+            alert("readyState = " + video.readyState);
+        }, 1000);
+
         setTimeout(async () => {
             try {
                 await video.play();
             } catch (e) {
-                console.log("play 실패:", e);
+                alert("play 에러: " + e.message);
             }
         }, 200);
 
