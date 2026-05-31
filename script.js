@@ -1,3 +1,22 @@
+alert("URL = " + location.href);
+alert("PROTOCOL = " + location.protocol);
+alert("SECURE = " + window.isSecureContext);
+
+navigator.permissions
+  .query({ name: "camera" })
+  .then(result => {
+      alert(
+          "camera permission = " +
+          result.state
+      );
+  })
+  .catch(err => {
+      alert(
+          "permissions api error\n" +
+          err.message
+      );
+  });
+
 const video = document.getElementById("camera");
 
 async function startCamera() {
