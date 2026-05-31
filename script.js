@@ -1,53 +1,87 @@
-const video = document.getElementById("camera");
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const video = document.getElementById("video");
 const startBtn = document.getElementById("startBtn");
 
-startBtn.addEventListener("click", startCamera);
+let scene, camera, renderer;
+let character;
 
-async function startCamera() {
+startBtn.addEventListener("click", startAR);
 
+async function startAR() {
+
+    // 1. 카메라
     const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
         audio: false
     });
 
-    alert("stream OK: " + stream.getVideoTracks().length);
-
     video.srcObject = stream;
-
     await video.play();
-
-    alert("video play 시작");
 
     startBtn.style.display = "none";
 
-    // 🔥 핵심: 프레임 콜백 기반 렌더링
-    if (video.requestVideoFrameCallback) {
-        video.requestVideoFrameCallback(drawFrame);
-    } else {
-        drawLegacy();
+    // 2. Three.js 초기화
+    initThree();
+
+    animate();
+}
+
+function initThree() {
+
+    scene = new THREE.Scene();
+
+    camera = new THREE.PerspectiveCamera(
+        70,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+    );
+
+    camera.position.z = 2;
+
+    renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById("container").appendChild(renderer.domElement);
+
+    // 3. 카메라 영상 텍스처
+    const texture = new THREE.VideoTexture(video);
+
+    const bgGeometry = new THREE.PlaneGeometry(16, 9);
+    const bgMaterial = new THREE.MeshBasicMaterial({ map: texture });
+    const bg = new THREE.Mesh(bgGeometry, bgMaterial);
+
+    bg.scale.set(1.5, 1.5, 1);
+    scene.add(bg);
+
+    // 4. 3D 캐릭터 로드
+    const loader = new THREE.GLTFLoader();
+
+    loader.load("assets/character.glb", (gltf) => {
+
+        character = gltf.scene;
+
+        character.scale.set(1, 1, 1);
+        character.position.set(0, -0.8, 0);
+
+        scene.add(character);
+    });
+
+    // resize
+    window.addEventListener("resize", () => {
+
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+}
+
+function animate() {
+
+    requestAnimationFrame(animate);
+
+    if (character) {
+        character.rotation.y += 0.01;
     }
-}
 
-function drawFrame() {
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-    video.requestVideoFrameCallback(drawFrame);
-}
-
-// fallback
-function drawLegacy() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    try {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    } catch (e) {}
-
-    requestAnimationFrame(drawLegacy);
+    renderer.render(scene, camera);
 }
