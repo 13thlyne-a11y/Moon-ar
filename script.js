@@ -2,7 +2,7 @@ const video = document.getElementById("video");
 const startBtn = document.getElementById("startBtn");
 
 let scene, camera, renderer;
-let character;
+let moon;
 
 startBtn.addEventListener("click", startAR);
 
@@ -42,28 +42,39 @@ function initThree() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById("container").appendChild(renderer.domElement);
 
-    // 3. 카메라 영상 텍스처
-    const texture = new THREE.VideoTexture(video);
+    // 조명 관련
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(2, 2, 2);
+    scene.add(light);
 
-    const bgGeometry = new THREE.PlaneGeometry(16, 9);
-    const bgMaterial = new THREE.MeshBasicMaterial({ map: texture });
-    const bg = new THREE.Mesh(bgGeometry, bgMaterial);
+    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+    scene.add(ambient);
 
-    bg.scale.set(1.5, 1.5, 1);
-    scene.add(bg);
-
-    // 4. 3D 캐릭터 로드
-    const loader = new THREE.GLTFLoader();
-
-    loader.load("assets/character.glb", (gltf) => {
-
-        character = gltf.scene;
-
-        character.scale.set(1, 1, 1);
-        character.position.set(0, -0.8, 0);
-
-        scene.add(character);
+    const textureLoader = new THREE.TextureLoader();
+    const moonTexture = textureLoader.load("assets/moon.jpg");
+    const moonGeometry = new THREE.SphereGeometry(0.6, 64, 64);
+    const moonMaterial = new THREE.MeshStandardMaterial({
+        map: moonTexture
     });
+
+    moon = new THREE.Mesh(moonGeometry, moonMaterial);
+    moon.position.set(0, -0.5, -1);
+    scene.add(moon);
+    moon.renderOrder = 1;
+
+    // 3. 카메라 영상 텍스처
+    video.onloadedmetadata = () => {
+
+        const texture = new THREE.VideoTexture(video);
+
+        const bgGeometry = new THREE.PlaneGeometry(16, 9);
+        const bgMaterial = new THREE.MeshBasicMaterial({ map: texture });
+
+        const bg = new THREE.Mesh(bgGeometry, bgMaterial);
+        bg.scale.set(1.5, 1.5, 1);
+        scene.add(bg);
+        bg.renderOrder = 0;
+    };
 
     // resize
     window.addEventListener("resize", () => {
@@ -79,8 +90,8 @@ function animate() {
 
     requestAnimationFrame(animate);
 
-    if (character) {
-        character.rotation.y += 0.01;
+    if (moon) {
+        moon.rotation.y += 0.005;
     }
 
     renderer.render(scene, camera);
