@@ -1,34 +1,58 @@
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  width: 100%;
-  height: 100%;
-  background: black;
+html,
+body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:black;
 }
 
-/* 카메라 */
-#video {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  z-index: 0;
+#camera-container {
+    position:relative;
+    width:100vw;
+    height:100vh;
 }
 
-/* three overlay */
-#threeCanvas {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 1;
+#camera {
+    position:absolute;
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-/* 버튼 */
-#moonBtn, #captureBtn {
-  position: absolute;
-  z-index: 10;
+#character {
+    position:absolute;
+
+    width:300px;
+    height:300px;
+
+    left:50%;
+    bottom:80px;
+
+    transform:translateX(-50%);
+}
+
+#controls {
+    position:fixed;
+
+    bottom:20px;
+    left:50%;
+
+    transform:translateX(-50%);
+    z-index:100;
+}
+
+button {
+    border:none;
+    border-radius:999px;
+
+    padding:15px 30px;
+
+    font-size:18px;
+    cursor:pointer;
+}
+
+#captureCanvas {
+    display:none;
 }
