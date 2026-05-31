@@ -20,12 +20,16 @@ async function startCamera() {
 
         await video.play();
 
-        console.log("카메라 시작");
+        alert("카메라 시작 성공");
 
     } catch (err) {
 
+        alert(
+            "에러명: " + err.name +
+            "\n메시지: " + err.message
+        );
+
         console.error(err);
-        alert("카메라 접근 실패");
     }
 }
 
