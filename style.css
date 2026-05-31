@@ -22,7 +22,7 @@ body {
 }
 
 #character {
-    position:absolute;
+    /*position:absolute;
 
     width:300px;
     height:300px;
@@ -30,7 +30,8 @@ body {
     left:50%;
     bottom:80px;
 
-    transform:translateX(-50%);
+    transform:translateX(-50%);*/
+    display:none;
 }
 
 #controls {
