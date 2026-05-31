@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Moon Camera</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css" />
+<title>AR Camera</title>
+
+<link rel="stylesheet" href="style.css">
+
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
-
 <body>
 
-  <video id="video" autoplay playsinline muted></video>
-  <canvas id="threeCanvas"></canvas>
+<div id="camera-container">
 
-  <button id="moonBtn">🌕 보름달</button>
-  <button id="captureBtn">촬영</button>
+    <video
+        id="camera"
+        autoplay
+        playsinline
+        muted>
+    </video>
 
-  <div id="captureFrame" class="hidden">
-    <img id="previewImg" />
-    <div class="frame-buttons">
-      <button id="downloadBtn">저장</button>
-      <button id="closeBtn">닫기</button>
-    </div>
-  </div>
+    <model-viewer
+        id="character"
+        src="./assets/character.glb"
+        camera-controls
+        auto-rotate
+        exposure="1"
+        shadow-intensity="1">
+    </model-viewer>
 
-  <script type="module" src="script.js"></script>
+</div>
+
+<div id="controls">
+    <button id="captureBtn">📸 촬영</button>
+</div>
+
+<canvas id="captureCanvas"></canvas>
+
+<script src="app.js"></script>
 
 </body>
 </html>
